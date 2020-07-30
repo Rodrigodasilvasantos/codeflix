@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageDefault from '../../../components/PageDefault';
 import FormField from '../../../components/FormField';
-import Button from '../../../components/Button'
 
 function CadastroCategoria() {
   const valoresIniciais = {
@@ -15,10 +14,10 @@ function CadastroCategoria() {
 
 
   function setValue(chave, valor) {
-    
+    // chave: nome, descricao, bla, bli
     setValues({
       ...values,
-      [chave]: valor,
+      [chave]: valor, // nome: 'valor'
     })
   }
 
@@ -29,20 +28,21 @@ function CadastroCategoria() {
     );
   }
 
+  // ============
 
   useEffect(() => {
-    if(window.location.href.includes('localhost')) {
-      const URL = 'http://localhost:8080/categorias'; 
-      fetch(URL)
-       .then(async (respostaDoServer) =>{
-        if(respostaDoServer.ok) {
-          const resposta = await respostaDoServer.json();
-          setCategorias(resposta);
-          return; 
+    const URL = window.location.hostname.includes('localhost')
+      ? 'http://localhost:8080/categorias'
+      : 'https://codefflix.herokuapp.com/categorias';
+    fetch(URL)
+      .then(async (response) => {
+        if (response.ok) {
+          const result = await response.json();
+          setCategorias(result);
+          return;
         }
         throw new Error('Não foi possível pegar os dados');
-       })
-    }    
+      });
   }, []);
 
   return (
@@ -75,7 +75,17 @@ function CadastroCategoria() {
           value={values.descricao}
           onChange={handleChange}
         />
-        
+        {/* <div>
+          <label>
+            Descrição:
+            <textarea
+              type="text"
+              value={values.descricao}
+              name="descricao"
+              onChange={handleChange}
+            />
+          </label>
+        </div> */}
 
         <FormField
           label="Cor"
@@ -84,11 +94,21 @@ function CadastroCategoria() {
           value={values.cor}
           onChange={handleChange}
         />
-        
+        {/* <div>
+          <label>
+            Cor:
+            <input
+              type="color"
+              value={values.cor}
+              name="cor"
+              onChange={handleChange}
+            />
+          </label>
+        </div> */}
 
-        <Button>
+        <button>
           Cadastrar
-        </Button>
+        </button>
       </form>
       
 
